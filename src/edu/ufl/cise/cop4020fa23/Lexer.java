@@ -290,11 +290,13 @@ public class Lexer implements ILexer {
                 state = State.HAVE_ZERO;
                 return null;
             }
+
             case '\0' -> {
                 reachedEOF = true;
                 eofReached = true;
                 return createToken(Kind.EOF, startPos, 1);
             }
+
             default -> {
                 if (Character.isLetter(ch)) {
                     state = State.IN_IDENT;
@@ -349,6 +351,7 @@ public class Lexer implements ILexer {
 //        }
 //    }
 
+//    SOLVED
     private IToken handleString(char ch) throws LexicalException {
         if (ch == '"') {
             String stringValue = new String(chars, startPos + 1, pos - startPos - 1);
@@ -362,6 +365,22 @@ public class Lexer implements ILexer {
             return null;
         }
     }
+
+//    private IToken handleString(char ch) throws LexicalException {
+//        if (ch == '"') {
+//            String stringValue = new String(chars, startPos + 1, pos - startPos - 1);
+//            pos++;
+//            state = State.START;
+//            IToken token = new Token(STRING_LIT, startPos, stringValue.length() + 2, stringValue.toCharArray(), new SourceLocation(line, startPos));
+//            System.out.println("Token: " + STRING_LIT + " and value: " + Arrays.toString(stringValue.toCharArray()) + " at position " + startPos);
+//            return token;
+//        } else if (ch == '\0' || ch == '\n') {
+//            throw new LexicalException(new SourceLocation(line, pos), "Unclosed string starting at position: " + startPos);
+//        }  else {
+//            pos++;
+//            return null;
+//        }
+//    }
 
 
 //    private IToken handleString(char ch) throws LexicalException {
