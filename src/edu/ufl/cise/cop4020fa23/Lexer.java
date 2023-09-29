@@ -336,22 +336,6 @@ public class Lexer implements ILexer {
 
 
 
-//    private IToken handleString(char ch) {
-//        if (ch == '"') {
-//            String stringValue = new String(chars, startPos + 1, pos - startPos - 1);
-//            pos++;
-//            state = State.START;
-//            return createToken(STRING_LIT, startPos, stringValue.length() + 2, chars);
-//        } else if (ch == '\0' || ch == '\n') {
-//            state = State.START;
-//            return null;
-//        } else {
-//            pos++;
-//            return null;
-//        }
-//    }
-
-//    SOLVED
     private IToken handleString(char ch) throws LexicalException {
         if (ch == '"') {
             String stringValue = new String(chars, startPos + 1, pos - startPos - 1);
@@ -365,35 +349,6 @@ public class Lexer implements ILexer {
             return null;
         }
     }
-
-//    private IToken handleString(char ch) throws LexicalException {
-//        if (ch == '"') {
-//            String stringValue = new String(chars, startPos + 1, pos - startPos - 1);
-//            pos++;
-//            state = State.START;
-//            IToken token = new Token(STRING_LIT, startPos, stringValue.length() + 2, stringValue.toCharArray(), new SourceLocation(line, startPos));
-//            System.out.println("Token: " + STRING_LIT + " and value: " + Arrays.toString(stringValue.toCharArray()) + " at position " + startPos);
-//            return token;
-//        } else if (ch == '\0' || ch == '\n') {
-//            throw new LexicalException(new SourceLocation(line, pos), "Unclosed string starting at position: " + startPos);
-//        }  else {
-//            pos++;
-//            return null;
-//        }
-//    }
-
-
-//    private IToken handleString(char ch) throws LexicalException {
-//        if (ch == '"') {
-//            String stringValue = new String(chars, startPos + 1, pos - startPos - 1);
-//            pos++;
-//            state = State.START;
-//            return createToken(STRING_LIT, startPos, stringValue.length() + 2, chars);
-//        } else if (ch == '\0') {  // End of input character
-//            throw new LexicalException(new SourceLocation(line, pos), "Unclosed string starting at position: " + startPos);
-//        }
-//        return null;
-//    }
 
 
     private IToken handleNumber(char ch) throws LexicalException {
@@ -550,7 +505,7 @@ public class Lexer implements ILexer {
     private IToken getiToken(Kind kind, int startPos, int length, char[] chars) {
         char[] value = Arrays.copyOfRange(chars, startPos, startPos + length);
         IToken token = new Token(kind, startPos, length, value, new SourceLocation(line, startPos));
-        System.out.println("Token: " + kind + " and value: " + Arrays.toString(value) + " at position " + startPos);
+//        System.out.println("Token: " + kind + " and value: " + Arrays.toString(value) + " at position " + startPos);
         return token;
     }
 
