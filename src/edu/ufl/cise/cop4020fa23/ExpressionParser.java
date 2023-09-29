@@ -87,6 +87,9 @@ public class ExpressionParser implements IParser {
 		return e;
 	}
 
+	/* *****************************  MOKSH ***************************** */
+
+	// match the expected kind and move to the next token
 //	private void match(Kind expectedKind) throws SyntaxException {
 //		if (t.kind() == expectedKind) {
 //			try {
@@ -165,6 +168,8 @@ public class ExpressionParser implements IParser {
 		return left;
 	}
 
+	/* *****************************  Daniel  ***************************** */
+
 	// ComparisonExpr ::= PowExpr ( (< | > | == | <= | >=) PowExpr)*
 	private Expr comparisonExpr() throws PLCCompilerException {
 		IToken firstToken = token;
@@ -235,7 +240,7 @@ public class ExpressionParser implements IParser {
 		}
 	}
 
-
+	/* *****************************  Moksh  ***************************** */
 
 	// UnaryExprPostfix::= PrimaryExpr (PixelSelector | ε ) (ChannelSelector | ε )
 	private Expr postfixExpr() throws PLCCompilerException {
@@ -291,6 +296,8 @@ public class ExpressionParser implements IParser {
         }
 	}
 
+	/* *****************************  Daniel  ***************************** */
+
 	// PixelSelector  ::= [ Expr , Expr ]
 	private PixelSelector pixelSelector() throws PLCCompilerException {
 		match(LSQUARE);
@@ -324,7 +331,6 @@ public class ExpressionParser implements IParser {
 		match(RSQUARE);
 		return new ExpandedPixelExpr(token, e1, e2, e3);
 	}
-
 
 
 }

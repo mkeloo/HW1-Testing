@@ -501,7 +501,6 @@ public class Lexer implements ILexer {
     }
 
 
-    // ORIGINAL
     private IToken getiToken(Kind kind, int startPos, int length, char[] chars) {
         char[] value = Arrays.copyOfRange(chars, startPos, startPos + length);
         IToken token = new Token(kind, startPos, length, value, new SourceLocation(line, startPos));
