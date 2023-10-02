@@ -231,7 +231,7 @@ class HW0Tests {
     }
 
     @Test
-    void testSourceLocation() throws LexicalException {
+    void  testSourceLocation() throws LexicalException {
         assertTimeoutPreemptively(Duration.ofMillis(500), () -> {
             String input = """
 					if a

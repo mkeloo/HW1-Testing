@@ -465,23 +465,23 @@ class ExpressionParserTest_starter {
 
 	// Additional Test Cases:
 
-//	@Test
-//	void test33() throws PLCCompilerException {
-//		String input = """
-//            true
-//            """;
-//		AST ast = getAST(input);
-//		checkBooleanLitExpr(ast, true);
-//	}
+	@Test
+	void test33() throws PLCCompilerException {
+		String input = """
+            true
+            """;
+		AST ast = getAST(input);
+		checkBooleanLitExpr(ast, true);
+	}
 
-//	@Test
-//	void test34() throws PLCCompilerException {
-//		String input = """
-//            false
-//            """;
-//		AST ast = getAST(input);
-//		checkBooleanLitExpr(ast, false);
-//	}
+	@Test
+	void test34() throws PLCCompilerException {
+		String input = """
+            false
+            """;
+		AST ast = getAST(input);
+		checkBooleanLitExpr(ast, false);
+	}
 
 	@Test
 	void test35() throws PLCCompilerException {
@@ -584,6 +584,7 @@ class ExpressionParserTest_starter {
 //		checkIdentExpr(((ConditionalExpr) ast).getTrueExpr(), "b");
 //		checkIdentExpr(((ConditionalExpr) ast).getFalseExpr(), "c");
 //	}
+
 
 	@Test
 	void test43() throws PLCCompilerException {

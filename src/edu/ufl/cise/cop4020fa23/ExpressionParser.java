@@ -15,6 +15,7 @@ import static edu.ufl.cise.cop4020fa23.Kind.IDENT;
 import static edu.ufl.cise.cop4020fa23.Kind.LPAREN;
 import static edu.ufl.cise.cop4020fa23.Kind.LSQUARE;
 import static edu.ufl.cise.cop4020fa23.Kind.NUM_LIT;
+import static edu.ufl.cise.cop4020fa23.Kind.BOOLEAN_LIT;
 import static edu.ufl.cise.cop4020fa23.Kind.RES_blue;
 import static edu.ufl.cise.cop4020fa23.Kind.RES_green;
 import static edu.ufl.cise.cop4020fa23.Kind.RES_red;
@@ -34,6 +35,7 @@ import edu.ufl.cise.cop4020fa23.ast.ExpandedPixelExpr;
 import edu.ufl.cise.cop4020fa23.ast.Expr;
 import edu.ufl.cise.cop4020fa23.ast.IdentExpr;
 import edu.ufl.cise.cop4020fa23.ast.NumLitExpr;
+import edu.ufl.cise.cop4020fa23.ast.BooleanLitExpr;
 import edu.ufl.cise.cop4020fa23.ast.PixelSelector;
 import edu.ufl.cise.cop4020fa23.ast.PostfixExpr;
 import edu.ufl.cise.cop4020fa23.ast.StringLitExpr;
@@ -67,7 +69,6 @@ public class ExpressionParser implements IParser {
 	
 	final ILexer lexer;
 	private IToken token;
-
 
 
 	/**
@@ -126,28 +127,26 @@ public class ExpressionParser implements IParser {
 	}
 
 
-    // ConditionalExpr ::=  ?  Expr  :  Expr  :  Expr
+    // ConditionalExpr ::=  ?  Expr  : -> Expr  : , Expr
 	private ConditionalExpr conditionalExpr() throws PLCCompilerException {
-		IToken firstToken = token;
 		match(Kind.QUESTION);
 		Expr condition = expr();
 		match(Kind.RARROW);
 		Expr trueExpr = expr();
 		match(Kind.COMMA);
 		Expr falseExpr = expr();
-		return new ConditionalExpr(firstToken, condition, trueExpr, falseExpr);
+		return new ConditionalExpr(token, condition, trueExpr, falseExpr);
 	}
 
 	// LogicalAndExpr ::=  ComparisonExpr ( (   &   |  &&   )  ComparisonExpr)*
 	private Expr logicalAndExpr() throws PLCCompilerException {
-		IToken firstToken = token;
 		Expr left = comparisonExpr();
 
 		while (token.kind() == Kind.BITAND || token.kind() == Kind.AND) {
 			IToken opToken = token;
 			match(token.kind());
 			Expr right = comparisonExpr();
-			left = new BinaryExpr(firstToken, left, opToken, right);
+			left = new BinaryExpr(token, left, opToken, right);
 		}
 		return left;
 	}
@@ -156,14 +155,13 @@ public class ExpressionParser implements IParser {
 
 	// LogicalOrExpr ::= LogicalAndExpr (    (   |   |   ||   ) LogicalAndExpr)*
 	private Expr logicalOrExpr() throws PLCCompilerException {
-		IToken firstToken = token;
 		Expr left = logicalAndExpr();
 
 		while (token.kind() == Kind.OR || token.kind() == Kind.OR) {
 			IToken opToken = token;
 			match(token.kind());
 			Expr right = logicalAndExpr();
-			left = new BinaryExpr(firstToken, left, opToken, right);
+			left = new BinaryExpr(token, left, opToken, right);
 		}
 		return left;
 	}
@@ -172,69 +170,64 @@ public class ExpressionParser implements IParser {
 
 	// ComparisonExpr ::= PowExpr ( (< | > | == | <= | >=) PowExpr)*
 	private Expr comparisonExpr() throws PLCCompilerException {
-		IToken firstToken = token;
 		Expr left = powExpr();
 
 		while (Arrays.asList(Kind.LT, Kind.GT, Kind.EQ, Kind.LE, Kind.GE).contains(token.kind())) {
 			IToken opToken = token;
 			match(token.kind());
 			Expr right = powExpr();
-			left = new BinaryExpr(firstToken, left, opToken, right);
+			left = new BinaryExpr(token, left, opToken, right);
 		}
 		return left;
 	}
 
 	// PowExpr ::= AdditiveExpr ** PowExpr |   AdditiveExpr
 	private Expr powExpr() throws PLCCompilerException {
-		IToken firstToken = token;
 		Expr left = additiveExpr();
 
 		if (token.kind() == Kind.EXP) {
 			IToken opToken = token;
 			match(Kind.EXP);
 			Expr right = powExpr();
-			left = new BinaryExpr(firstToken, left, opToken, right);
+			left = new BinaryExpr(token, left, opToken, right);
 		}
 		return left;
 	}
 
 	// AdditiveExpr ::= MultiplicativeExpr ( ( + | -  ) MultiplicativeExpr )*
 	private Expr additiveExpr() throws PLCCompilerException {
-		IToken firstToken = token;
 		Expr left = multiplicativeExpr();
 
 		while (token.kind() == Kind.PLUS || token.kind() == Kind.MINUS) {
 			IToken opToken = token;
 			match(token.kind());
 			Expr right = multiplicativeExpr();
-			left = new BinaryExpr(firstToken, left, opToken, right);
+			left = new BinaryExpr(token, left, opToken, right);
 		}
 		return left;
 	}
 
 	// MultiplicativeExpr ::= UnaryExpr (( * |  /  |  % ) UnaryExpr)*
 	private Expr multiplicativeExpr() throws PLCCompilerException {
-		IToken firstToken = token;
 		Expr left = unaryExpr();
 
 		while (token.kind() == Kind.TIMES || token.kind() == Kind.DIV || token.kind() == Kind.MOD) {
 			IToken opToken = token;
 			match(token.kind());
 			Expr right = unaryExpr();
-			left = new BinaryExpr(firstToken, left, opToken, right);
+			left = new BinaryExpr(token, left, opToken, right);
 		}
 		return left;
 	}
 
 	// UnaryExpr ::=  ( ! | - | length | width) UnaryExpr  |  UnaryExprPostfix
 	private Expr unaryExpr() throws PLCCompilerException {
-		IToken firstToken = token;
 		if (token.kind() == Kind.BANG || token.kind() == Kind.MINUS ||
 				token.kind() == Kind.RES_width || token.kind() == Kind.RES_height) {
 			IToken opToken = token;
 			match(token.kind());
 			Expr expression = unaryExpr();
-			return new UnaryExpr(firstToken, opToken, expression);
+			return new UnaryExpr(token, opToken, expression);
 		} else {
 			return postfixExpr();
 		}
@@ -273,11 +266,17 @@ public class ExpressionParser implements IParser {
                 match(NUM_LIT);
                 return numLit;
             }
-            case IDENT -> {
-                IdentExpr ident = new IdentExpr(token);
-                match(IDENT);
-                return ident;
-            }
+			case IDENT -> {
+				if ("true".equals(token.text()) || "false".equals(token.text())) {
+					BooleanLitExpr booleanLit = new BooleanLitExpr(token);
+					match(IDENT);
+					return booleanLit;
+				} else {
+					IdentExpr ident = new IdentExpr(token);
+					match(IDENT);
+					return ident;
+				}
+			}
             case LPAREN -> {
                 match(LPAREN);
                 Expr expression = expr();
