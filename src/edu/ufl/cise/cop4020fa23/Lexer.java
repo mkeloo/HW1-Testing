@@ -346,7 +346,7 @@ public class Lexer implements ILexer {
             state = State.START;
             return createToken(STRING_LIT, startPos, stringValue.length() + 2, chars);
         } else if (ch == '\0' || ch == '\n') {
-            throw new LexicalException(new SourceLocation(line, pos), "Unclosed string starting at position: " + startPos);
+            throw new LexicalException(new SourceLocation(line, pos), "unclosed string starting at position: " + startPos);
         }  else {
             pos++;
             return null;
